@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../compute"
+		},
+		{
+			"path": "../compute2"
+		},
+		{
+			"path": "../data-access"
+		},
+		{
+			"path": "../data-upload"
+		},
+		{
+			"path": "../../Par"
+		}
+	],
+	"settings": {}
+}
