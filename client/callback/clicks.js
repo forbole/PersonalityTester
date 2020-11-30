@@ -23,9 +23,9 @@ const grpc = require('grpc')
                                        grpc.credentials.createInsecure());
 
     //define button
-    document.getElementById("comment-button").onclick = function() {(comment_click())};
-    document.getElementById("like-button").onclick = function() {(like_click())};
-
+    //document.getElementById("comment-button").onclick = function() {(comment_click())};
+    //document.getElementById("like-button").onclick = function() {(like_click())};
+/* 
     function like_click() {
         upload(parseInt(document.getElementById('like_post_id').value));
     }
@@ -42,39 +42,31 @@ const grpc = require('grpc')
       var userID = document.getElementById('user-id').innerText;
       var post=jsonlist.posts[postId].message + comment
       upload(post,comment,userID);
-    }
+    } */
 
     /* client side streaming
     * @param post
     */
     export function upload(post,userID){
-        
-        call = client.SaveData(function (error){
+        var call = client.SaveData(function (error){
             if (error) {
-                callback(error);
+                console.log("OH HERE IS ERROR!")
             }
-
-            function sender(post,identity ) {
-                return function(callback) {
-                  
-                    call.write({parsePhase:post,identity:userID});
-                  _.delay(callback, _.random(500, 1500));
-                };
-              }
+            call.write({parsePhase:post,identity:userID});  
         })
-        async.series([sender(post,userID)]);
-        //uploadsToParcel(userID,jsonlist.posts[postId].message+" "+comment)
     }
 
     //server side streamming
     export function get_recommendaton(userID){
         var returnword;
-        call= client.GetRecommended(userID);
+        var call= client.GetRecommended(userID);
         call.on('data', function(words) {
             returnword = words.word;
         });
         //callback when the function is finish
-        call.on('end', callback);
+        call.on('end', function(){
+            console.log("Yea" + returnword)
+        });
         return returnword
     }
 

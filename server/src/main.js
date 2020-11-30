@@ -29,7 +29,12 @@ function saveData(call,callback) {
         if (likedpost.parsePhase != '') {
             console.log(likedpost.parsePhase);
             console.log(likedpost.identity);
-             action.uploads_to_parcel(likedpost.identity,likedpost.parsePhase)
+            try{
+                action.uploads_to_parcel(likedpost.identity,likedpost.parsePhase)
+            }catch (e){
+                console.error(e)
+                throw new Error("Cannot upload!")
+            }
          }
     });
     call.on('end', function () {
@@ -39,8 +44,14 @@ function saveData(call,callback) {
 
 /* output stream */
 function getRecommended(call,callback) {
-     var str = action.download_compute(call.request.identity)
-    call.write(str);
+     var str;
+     try{
+         str = action.download_compute(call.request.identity)
+         call.write(str);
+     }catch(e){
+        console.error(e)
+        throw new Error("Cannot download!")
+     }
     call.end();
 }
 

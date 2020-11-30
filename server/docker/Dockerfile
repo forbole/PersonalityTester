@@ -1,4 +1,4 @@
-FROM huggingface/transformers-pytorch-gpu
+FROM huggingface/transformers-pytorch-cpu
 
 # Prepare work directory.
 RUN mkdir /predict

@@ -2,7 +2,7 @@ import numpy as np
 import sys
 import json
 
-from transformers import pipeline
+from transformers import pipeline, BertConfig, BertModel
 
 # Read cmdline parameters. We skip error checking in this simplified example.
 ##it only contain the words that the user liked
@@ -18,6 +18,10 @@ print(candidate_labels)
 #candidate_labels = ['technology', 'cooking', 'dancing','blockchain','cosmos','festival','food','traveling']
 final_result=np.zeros(len(candidate_labels))
 
+#import model
+classifier = pipeline("zero-shot-classification",model=)
+
+
 #compute every sentence
 classifier = pipeline("zero-shot-classification",
                       model="facebook/bart-large-mnli")
@@ -28,6 +32,7 @@ for sentence in sequence_to_classify:
 
 #output the first element that the user most interested
 max_iter = np.argmax(result['scores'])
+print(candidate_labels[max_iter])
 with open(output_path, 'w') as f:
     f.write(f"You are interest in {candidate_labels[max_iter]}!\n")
 
