@@ -15,10 +15,18 @@
  * limitations under the License.
  *
  */
-require('dotenv').config();
-const action = require('./action')
+
+import dotenv from 'dotenv'
+dotenv.config()
+/* require('dotenv').config();
+ */
+import * as action from './action.js'
+import * as path from 'path'
+import Mali from 'mali'
+
+/* const action = require('./action')
 const path = require('path')
-const Mali = require('mali')
+const Mali = require('mali') */
 const PROTO_PATH = path.resolve(__dirname, './recommend.proto');
 const app = new Mali(PROTO_PATH, 'ParcelParser')
 
@@ -43,10 +51,10 @@ function saveData(call,callback) {
 }
 
 /* output stream */
-function getRecommended(call,callback) {
+function getRecommended(call,callback=function(){}) {
      var str;
      try{
-         str = action.download_compute(call.request.identity)
+         str = action.download(call.request.identity)
          call.write(str);
      }catch(e){
         console.error(e)

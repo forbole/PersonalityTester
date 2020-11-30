@@ -1,116 +1,113 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.download_compute = exports.uploadsToParcel = void 0;
-const tslib_1 = require("tslib");
-// **this should be a server side script**
-/* Set up environment variable first */
-const Parcel = tslib_1.__importStar(require("@oasislabs/parcel-sdk"));
-const configParams = Parcel.Config.paramsFromEnv();
-const config = new Parcel.Config(configParams);
-function uploadsToParcel(address, actual_data) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
-        //upload for other people
-        console.log(address + " " + actual_data);
-        const adminConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
-        const adminIdentityAddress = Parcel.Identity.addressFromToken(yield adminConfig.tokenProvider.getToken());
-        const adminIdentity = yield Parcel.Identity.connect(adminIdentityAddress, config);
-        const endUserConfig = new Parcel.Config({
-            apiAccessToken: "AAAAGYHZxhwjJXjnGEIiyDCyZJq+Prknbneb9gYe9teCKrGa",
+exports.download = exports.uploads_to_parcel = void 0;
+var tslib_1 = require("tslib");
+var Parcel = tslib_1.__importStar(require("@oasislabs/parcel-sdk"));
+require('dotenv').config("../.env");
+//https://steward.oasiscloud.io/apps/c9d5fe98-b4d7-4b46-850f-b7ceed7e6bed/join
+var configParams = Parcel.Config.paramsFromEnv();
+var config = new Parcel.Config(configParams);
+function uploads_to_parcel(address, parsephase) {
+    return tslib_1.__awaiter(this, void 0, void 0, function () {
+        var aliceConfig, aliceIdentityAddress, _a, _b, aliceIdentity, bobIdentityAddress, datasetMetadata, data, dataset, _c, _d, _e;
+        return tslib_1.__generator(this, function (_f) {
+            switch (_f.label) {
+                case 0:
+                    aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
+                    _b = (_a = Parcel.Identity).addressFromToken;
+                    return [4 /*yield*/, aliceConfig.tokenProvider.getToken()];
+                case 1:
+                    aliceIdentityAddress = _b.apply(_a, [_f.sent()]);
+                    return [4 /*yield*/, Parcel.Identity.connect(aliceIdentityAddress, config)];
+                case 2:
+                    aliceIdentity = _f.sent();
+                    bobIdentityAddress = new Parcel.Address("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
+                    datasetMetadata = {
+                        title: "What you read?",
+                        metadataUrl: 'http://s3-us-west-2.amazonaws.com/my_first_metadata.json',
+                    };
+                    data = new TextEncoder().encode('The weather will be sunny tomorrow');
+                    console.log('Uploading data for Bob');
+                    _d = (_c = Parcel.Dataset).upload;
+                    _e = [data,
+                        datasetMetadata];
+                    // The dataset is uploaded for Bob...
+                    return [4 /*yield*/, Parcel.Identity.connect(bobIdentityAddress, aliceConfig)];
+                case 3: return [4 /*yield*/, _d.apply(_c, _e.concat([
+                        // The dataset is uploaded for Bob...
+                        _f.sent(), 
+                        // ...with Alice's credentials being used to do the upload...
+                        aliceConfig,
+                        {
+                            // ...and Alice is flagged as the dataset's creator.
+                            creator: aliceIdentity,
+                        }]))];
+                case 4:
+                    dataset = _f.sent();
+                    console.log("Created dataset with address " + dataset.address.hex + " and uploaded to " + dataset.metadata.dataUrl + "\n");
+                    return [2 /*return*/];
+            }
         });
-        const endUserIdentityAddress = new Parcel.Address(address);
-        const endUserIndentity = yield Parcel.Identity.connect(endUserIdentityAddress, endUserConfig);
-        const datasetMetadata = {
-            title: "User's data",
-            metadataUrl: 'http://s3-us-west-2.amazonaws.com/my_first_metadata.json',
-        };
-        const data = new TextEncoder().encode(actual_data);
-        console.log('Uploading data for User');
-        const dataset = yield Parcel.Dataset.upload(data, datasetMetadata, 
-        // The dataset is uploaded for endUser...
-        yield Parcel.Identity.connect(endUserIdentityAddress, adminConfig), 
-        // ...with admin's credentials being used to do the upload...
-        adminConfig, {
-            // ...and admin is flagged as the dataset's creator.
-            creator: adminIdentity,
-        });
-        console.log(`Created dataset with address ${dataset.address.hex} and uploaded to ${dataset.metadata.dataUrl}\n`);
-        const policy = yield Parcel.WhitelistPolicy.create(endUserConfig, endUserIndentity, // The policy creator, and subsequent owner.
-        new Parcel.Set([adminIdentity.address]));
-        yield dataset.setPolicy(policy);
-        console.log(`Created policy with address ${policy.address.hex} and applied it to dataset ${dataset.address.hex}\n`);
-        //try to download using admin identity
-        /* const datasetToDownload = await Parcel.Dataset.connect(dataset.address, adminIdentity, config);
-        
-          try {
-          console.log(`Attempting to access endUser's data without permission...`);
-          await new Promise((resolve, reject) => {
-              const decryptedStream = datasetToDownload.download();
-              decryptedStream.on('error', reject);
-              decryptedStream.on('end', resolve);
-          });
-          throw new Error('This should not happen.');
-        } catch (e) {
-          // this is expected
-          console.log(`Error: ${e.constructor.name}`);
-          console.log("`adminIdentity` was not able to access endUser's data (expected).\n");
-          } */
-        //should be ok to download
     });
 }
-exports.uploadsToParcel = uploadsToParcel;
-;
-//frontend client_id(from config.js)
-function download_compute(address, api_Access_token) {
-    return tslib_1.__awaiter(this, void 0, void 0, function* () {
-        //whitelist the server to take endUser's config
-        const endUserIdentityAddress = new Parcel.Address(address);
-        const adminConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
-        const adminIdentityAddress = Parcel.Identity.addressFromToken(yield adminConfig.tokenProvider.getToken());
-        const adminIdentity = yield Parcel.Identity.connect(adminIdentityAddress, adminConfig);
-        //download dataset
-        const writestream = "../docker/test_workdir/data/in/intext";
-        const streamFinished = require('util').promisify(require('stream').finished);
-        let datasetByEnduser = yield Parcel.Dataset.connect(endUserIdentityAddress, adminIdentity, adminConfig);
-        try {
-            const secretDataStream = datasetByEnduser.download();
-            const secretDatasetWriter = secretDataStream.pipe(require('fs').createWriteStream(writestream));
-            yield streamFinished(secretDatasetWriter);
-            console.log(`\nDataset ${datasetByEnduser.address.hex} has been downloaded to ${writestream}`);
-        }
-        catch (e) {
-            throw new Error(`Failed to download dataset at ${datasetByEnduser.address.hex}`);
-        }
-        const secretDataByadmin = require('fs').readFileSync(writestream).toString();
-        console.log(`Here's the data: ${secretDataByadmin}`);
-        //compute
-        const jobRequest = {
-            name: 'interest_classificaiton',
-            dockerImage: 'oasislabs/acme-derma-demo',
-            inputDatasets: [{ mountPath: 'intext.txt', address: endUserIdentityAddress },
-                { mountPath: 'label.txt', address: endUserIdentityAddress }],
-            outputDatasets: [{ mountPath: 'prediction.txt', owner: adminIdentity }],
-            cmd: [
-                'python3',
-                'predict.py',
-                '/parcel/data/in/intext.txt',
-                '/parcel/data/in/label.txt',
-                '/parcel/data/out/prediction.txt',
-            ],
-        };
-        const dispatcher = yield Parcel.Dispatcher.connect(config.dispatcherAddress, adminIdentity, config);
-        const jobId = yield dispatcher.submitJob({ job: jobRequest });
-        const job = yield dispatcher.getCompletedJobInfo(jobId);
-        if (job.status instanceof Parcel.JobCompletionStatus.Success) {
-            console.log('Job completed successfully!');
-        }
-        else {
-            console.log('Job failed!', job.info);
-        }
-        if (job.outputs[0]) {
-            const output = yield Parcel.Dataset.connect(job.outputs[0].address, adminIdentity, config);
-            output.downloadToPath('/tmp/job_out');
-            console.log('Job output stored in /tmp/job_out.');
-        }
+exports.uploads_to_parcel = uploads_to_parcel;
+function download(identity) {
+    return tslib_1.__awaiter(this, void 0, void 0, function () {
+        var aliceConfig, aliceIdentityAddress, _a, _b, aliceIdentity, bobIdentityAddress, datasetByAlice, streamFinished, writeFile, secretDataStream, secretDatasetWriter, e_1, secretDataByAlice;
+        return tslib_1.__generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
+                    _b = (_a = Parcel.Identity).addressFromToken;
+                    return [4 /*yield*/, aliceConfig.tokenProvider.getToken()];
+                case 1:
+                    aliceIdentityAddress = _b.apply(_a, [_c.sent()]);
+                    return [4 /*yield*/, Parcel.Identity.connect(aliceIdentityAddress, config)];
+                case 2:
+                    aliceIdentity = _c.sent();
+                    bobIdentityAddress = new Parcel.Address("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
+                    return [4 /*yield*/, Parcel.Dataset.connect(bobIdentityAddress, aliceIdentity, aliceConfig)];
+                case 3:
+                    datasetByAlice = _c.sent();
+                    streamFinished = require('util').promisify(require('stream').finished);
+                    writeFile = '../docker/test_workdir/data/in';
+                    _c.label = 4;
+                case 4:
+                    _c.trys.push([4, 6, , 7]);
+                    secretDataStream = datasetByAlice.download();
+                    secretDatasetWriter = secretDataStream.pipe(require('fs').createWriteStream(writeFile));
+                    return [4 /*yield*/, streamFinished(secretDatasetWriter)];
+                case 5:
+                    _c.sent();
+                    console.log("\nDataset " + datasetByAlice.address.hex + " has been downloaded to " + writeFile);
+                    return [3 /*break*/, 7];
+                case 6:
+                    e_1 = _c.sent();
+                    throw new Error("Failed to download dataset at " + datasetByAlice.address.hex);
+                case 7:
+                    secretDataByAlice = require('fs').readFileSync(writeFile).toString();
+                    console.log("Here's the data: " + secretDataByAlice);
+                    return [2 /*return*/];
+            }
+        });
     });
 }
-exports.download_compute = download_compute;
+exports.download = download;
+function main() {
+    return tslib_1.__awaiter(this, void 0, void 0, function () {
+        return tslib_1.__generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, download("123")];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+main()
+    .then(function () { return console.log('All done!'); })
+    .catch(function (err) {
+    console.log("Error in main(): " + (err.stack || JSON.stringify(err)));
+    process.exitCode = 1;
+});

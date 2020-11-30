@@ -1,70 +1,72 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const tslib_1 = require("tslib");
-//createServer
-const express = tslib_1.__importStar(require("express"));
-const app = express();
-app.set("port", process.env.PORT || 3000);
-var http = require("http").Server(app);
-// simple '/' endpoint sending a Hello World
-// response
-app.get("/", (req, res) => {
-    res.send("hello world");
-});
-// start our simple server up on localhost:3000
-const server = http.listen(3000, function () {
-    console.log("listening on *:3000");
-});
 /*
-// #region snippet-config
-const configParams = Parcel.Config.paramsFromEnv();
-const config = new Parcel.Config(configParams);
-// #endregion snippet-config
-
-async function main() {
-    require('dotenv').config()
-    //process.env.OASIS_CLIENT_ID
-
-    console.log('Here we go...');
-
-    const identity = await config.getTokenIdentity();
-    const dispatcher = await Parcel.Dispatcher.connect(config.dispatcherAddress, identity, config);
-
-    // Set up the datasets
-    // #region snippet-input-datasets
-    const skinDataset = await Parcel.Dataset.upload(
-        await fs.promises.readFile('docker/test_workdir/data/in/basal_cell_carcinoma_example.jpg'),
-        { title: 'User-provided skin image' },
-        identity,
-        config,
-    );
-    // #endregion snippet-input-datasets
-    console.log('Datasets uploaded.');
-
-    // Submit the job.
-    // #region snippet-submit-job
-    const jobRequest = {
-        name: 'skin-lesion-classification',
-        dockerImage: 'oasislabs/acme-derma-demo',
-        inputDatasets: [{ mountPath: 'skin.jpg', address: skinDataset.address }],
-        outputDatasets: [{ mountPath: 'prediction.txt', owner: identity }],
-        cmd: [
-            'python',
-            'predict.py',
-            '/parcel/data/in/skin.jpg',
-            '/parcel/data/out/prediction.txt',
-        ],
-    };
-    const jobId = await dispatcher.submitJob({ job: jobRequest });
-    // #endregion snippet-submit-job
-    console.log(`Job ${Parcel.utils.encodeHex(jobId)} submitted.`);
-
-    // Wait for job completion.
-    const job = await dispatcher.getCompletedJobInfo(jobId);
-    if (job.status instanceof Parcel.JobCompletionStatus.Success) {
-        console.log('Job completed successfully!');
-    } else {
-        console.log('Job failed!', job.info);
-    }
+ *
+ * Copyright 2015 gRPC authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
+var dotenv_1 = tslib_1.__importDefault(require("dotenv"));
+dotenv_1.default.config();
+/* require('dotenv').config();
+ */
+var action = tslib_1.__importStar(require("./action.js"));
+var path = tslib_1.__importStar(require("path"));
+var mali_1 = tslib_1.__importDefault(require("mali"));
+/* const action = require('./action')
+const path = require('path')
+const Mali = require('mali') */
+var PROTO_PATH = path.resolve(__dirname, './recommend.proto');
+var app = new mali_1.default(PROTO_PATH, 'ParcelParser');
+/* input stream */
+// savedata et the user action stream and save that to parcel
+function saveData(call, callback) {
+    call.on('data', function (likedpost) {
+        if (likedpost.parsePhase != '') {
+            console.log(likedpost.parsePhase);
+            console.log(likedpost.identity);
+            try {
+                action.uploads_to_parcel(likedpost.identity, likedpost.parsePhase);
+            }
+            catch (e) {
+                console.error(e);
+                throw new Error("Cannot upload!");
+            }
+        }
+    });
+    call.on('end', function () {
+        callback(null, { msg: "message received!" });
+    });
 }
- */ 
+/* output stream */
+function getRecommended(call, callback) {
+    if (callback === void 0) { callback = function () { }; }
+    var str;
+    try {
+        str = action.download(call.request.identity);
+        call.write(str);
+    }
+    catch (e) {
+        console.error(e);
+        throw new Error("Cannot download!");
+    }
+    call.end();
+}
+function main() {
+    app.use({ saveData: saveData, getRecommended: getRecommended });
+    console.log("Yeah you made it!");
+    app.start('127.0.0.1:50051');
+}
+main();
