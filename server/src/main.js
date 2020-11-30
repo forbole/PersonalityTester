@@ -23,11 +23,14 @@ const PROTO_PATH = path.resolve(__dirname, './recommend.proto');
 const app = new Mali(PROTO_PATH, 'ParcelParser')
 
 /* input stream */
+// savedata et the user action stream and save that to parcel
 function saveData(call,callback) {
     call.on('data', function (likedpost) {
         if (likedpost.parsePhase != '') {
+            console.log(likedpost.parsePhase);
+            console.log(likedpost.identity);
              action.uploads_to_parcel(likedpost.identity,likedpost.parsePhase)
-       }
+         }
     });
     call.on('end', function () {
         callback(null, { msg: "message received!" });

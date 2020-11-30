@@ -9,15 +9,19 @@ service ParcelParser {
 
 //this input the posts into the parcel server
 message Datastream{
-    int32 parsePhase = 1;
-    int32 identity = 2;
+    string parsePhase = 1;
+    string identity = 2;
+}
+
+message msg{
+    string msg=1;
 }
 
 message UserInfo{
-    int32 identity = 1;
+    string identity = 1;
 }
 
 //the processed word
 message Words{
-    int32 word = 1;
+    string word = 1;
 }

@@ -14,6 +14,7 @@
     <div class="main">
       <div id="response">
         <div id="data"></div>
+        <a href="https://steward.oasiscloud.io/apps/c9d5fe98-b4d7-4b46-850f-b7ceed7e6bed/join" target="_blank">Grant Permission</a>
          <!--  <button id="myData" data-cy="myData"></button> -->
         <h2>Welcome to All My Chard</h2>
         <!-- like button to see which post (0-11) to like -->
@@ -47,53 +48,9 @@
     <!-- #region snippet-receive -->
     <script src="callback/appoloconfig.js" type="text/javascript"></script>
     <script src="config.js" type="text/javascript"></script>
-    <script>
-    import uploadsToParcel  from './action';
+    <script src="clicks.js" type="text/javascript"></script>
+    <script src="oicd.js" type="text/javascript"></script>
 
-    document.getElementById("comment-button").onclick = function() {(comment_click())};
-    document.getElementById("like-button").onclick = function() {(like_click())};
-
-    function like_click() {
-        upload(parseInt(document.getElementById('like_post_id').value));
-    }
-
-    export function comment_click(){
-      console.log("clicked")
-      var postId = document.getElementById('comment_post_id').value;
-      var comment = document.getElementById('comment_post_text').value;
-      upload(parseInt(postId),comment);
-    }
-
-    function upload(postId,comment=""){
-        var userID = document.getElementById('user-id').innerText;
-        console.log(jsonlist.posts[postId].message)
-        //uploadsToParcel(userID,jsonlist.posts[postId].message+" "+comment)
-    }
-
-    </script>
-    <script>
-      Oidc.Log.logger = console;
-      Oidc.Log.level = Oidc.Log.DEBUG;
-      const oidcClient = new Oidc.OidcClient(config);
-      (async function() {
-        try {
-          const response = await oidcClient.processSigninResponse(location.href);
-          const IDToken = response.id_token;
-          const decoded = jwt_decode(IDToken);
-          const address = decoded.sub;
-          console.log(`ID token:\n${JSON.stringify(decoded, null, '')}`);
-          document.getElementById('user-id').innerText = `${address}`;
-          document.getElementById('grant-access-oasis').addEventListener('click', function () {
-            location.assign(grantUrl(address));
-          });
-        } catch (error) {
-          document.getElementById('user-id').hidden = true;
-          document.getElementById('grant-access-oasis').hidden = true;
-          document.getElementById('response').innerText = `${error}`;
-        }
-      })();
-
-    </script>
     <!-- #endregion snippet-receive -->
   </body>
 </html>
