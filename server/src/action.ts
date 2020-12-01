@@ -1,5 +1,6 @@
 import * as Parcel from '@oasislabs/parcel-sdk';
 require('dotenv').config("../.env");
+import {readFileSync} from 'fs'
 
 //https://steward.oasiscloud.io/apps/c9d5fe98-b4d7-4b46-850f-b7ceed7e6bed/join
 const configParams = Parcel.Config.paramsFromEnv();
@@ -45,6 +46,12 @@ async function uploads_to_parcel(address,parsephase) {
   );
 }
 
+async function download_and_compute(identity) {
+  const dataset = await download(identity)
+  const result = compute(dataset)
+  return result
+}
+
 async function download(identity) {
   const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
   const aliceIdentityAddress = Parcel.Identity.addressFromToken(
@@ -71,8 +78,59 @@ try {
   throw new Error(`Failed to download dataset at ${datasetByAlice.address.hex}`);
 }
 const secretDataByAlice = require('fs').readFileSync(writeFile).toString();
-console.log(`Here's the data: ${secretDataByAlice}`);
+  console.log(`Here's the data: ${secretDataByAlice}`);
+
+  return secretDataByAlice;
+  
 }
+/* docker run \  -v $PWD/test_workdir:/predict/test \
+   appleno0610/testlabel:latest \
+  /usr/bin/python3 compute.py /predict/test/data/in/intext.txt /predict/test/data/in/label.txt /predict/test/data/out/out.txt /predict/test/distilbart-mnli-12-1 */
+async function compute(dataset) {
+  const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
+  const aliceIdentityAddress = Parcel.Identity.addressFromToken(
+    await aliceConfig.tokenProvider.getToken(),
+  );
+  const aliceIdentity = await Parcel.Identity.connect(aliceIdentityAddress, config);
+  const dispatcher = await Parcel.Dispatcher.connect(config.dispatcherAddress, aliceIdentity, config);
+
+  const jobRequest = {
+    name: 'social-media-personality-classification',
+    dockerImage: 'appleno0610/testlabel:latest',
+    inputDatasets: [{ mountPath: 'intext.txt', address: dataset.address }],
+    outputDatasets: [{ mountPath: 'out.txt', owner: aliceIdentity }],
+    cmd: [
+      '/usr/bin/python3',
+      'compute.py',
+      '/predict/test/data/in/intext.txt',
+      '/predict/test/data/in/label.txt',
+      '/predict/test/data/out/out.txt',
+      '/predict/test/distilbart-mnli-12-1',
+    ]
+  }
+
+  const jobId = await dispatcher.submitJob({ job: jobRequest });
+    // #endregion snippet-submit-job
+    console.log(`Job ${Parcel.utils.encodeHex(jobId)} submitted.`);
+
+    // Wait for job completion.
+    const job = await dispatcher.getCompletedJobInfo(jobId);
+    if (job.status instanceof Parcel.JobCompletionStatus.Success) {
+        console.log('Job completed successfully!');
+    } else {
+        console.log('Job failed!', job.info);
+    }
+  
+  try {
+    var result = readFileSync("./docker/test_workdir/data/out/out.txt", 'utf8');
+  } catch (e) {
+    console.log('CANNOT READ FILE', job.info);
+    result = 'CANNOT READ FILE'
+  }
+  console.log(result)
+  return result
+}
+
 
 export {
   uploads_to_parcel,

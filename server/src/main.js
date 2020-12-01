@@ -54,7 +54,7 @@ function saveData(call,callback) {
 function getRecommended(call,callback=function(){}) {
      var str;
      try{
-         str = action.download(call.request.identity)
+         str = action.download_and_compute(call.request.identity)
          call.write(str);
      }catch(e){
         console.error(e)

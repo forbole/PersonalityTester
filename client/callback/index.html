@@ -21,8 +21,9 @@
         <h2>Like which post?</h2>
         <form>
           <label for="fname">Post number:</label><br>
-          <input type="text" id="like-post-name" name="like-post-name" id="like_post_id"><br>
-          <input type="button" value="Like!" id="like-button">
+          <input type="text" name="like-post-name" id="like_post_id"><br>
+          <input type="button" value="Like!" id="like_button">
+          <div id="like_callback"></div>
         </form>
         <!-- Comment on which post? -->
         <h2>Comment which post?</h2>
@@ -31,8 +32,11 @@
           <input type="text" id="comment_post_id" name="comment_post_id" data-cy="comment_post_id"><br>
           <label for="fname">Comment:</label><br>
           <input type="text" id="comment_post_text" name="comment_post_text" data-cy="comment_post_text"><br>
-          <input type="button" value="Comment!" id="comment-button">
+          <input type="button" value="Comment!" id="comment_button">
+          <div id="comment_callback"></div>
         </form>
+        <input type="button" value="Analyse!" id="analyse_button">
+        <div id="analyse_callback"></div>
         <!-- #region snippet-show -->
         <span>Your user id is</span>
         <button id="user-id" data-cy="user-id"></button>
@@ -48,8 +52,8 @@
     <!-- #region snippet-receive -->
     <script src="callback/appoloconfig.js" type="text/javascript"></script>
     <script src="config.js" type="text/javascript"></script>
-    <script src="clicks.js" type="text/javascript"></script>
-    <script src="oicd.js" type="text/javascript"></script>
+    <script src="callback/clicks.js" type="text/javascript"></script>
+    <script src="callback/oicd.js" type="text/javascript"></script>
 
     <!-- #endregion snippet-receive -->
   </body>

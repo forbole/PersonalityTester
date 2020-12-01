@@ -1,6 +1,6 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-var path = require('path')
+/* import { createRequire } from 'module';
+const require = createRequire(import.meta.url); */
+/* var path = require('path')
 const protoLoader = require('@grpc/proto-loader')
 const grpc = require('grpc')
 
@@ -20,34 +20,45 @@ const grpc = require('grpc')
     const hello_proto = loaded.routeguide
 
     var client = new hello_proto.ParcelParser('0.0.0.0:50051',
-                                       grpc.credentials.createInsecure());
+                                       grpc.credentials.createInsecure()); */
 
     //define button
-    //document.getElementById("comment-button").onclick = function() {(comment_click())};
-    //document.getElementById("like-button").onclick = function() {(like_click())};
-/* 
+    console.log("load clicks")
+    document.getElementById("comment_button").onclick = comment_click;
+    document.getElementById("like_button").onclick = like_click;
+    document.getElementById("analyse_button").onclick = analyse_click;
+    
+
     function like_click() {
-        upload(parseInt(document.getElementById('like_post_id').value));
+        console.log("clicked like!")
+        var postID = document.getElementById('like_post_id').value;
+        var post = jsonlist.posts[postID].message;
+       // upload(post);
+        document.getElementById('like_callback').innerHTML= "<p>Post="+post+"</p>";
+
     }
 
-    function recommend_click(){
+    function analyse_click(){
         var userID = document.getElementById('user-id').innerText;
-        get_recommendaton(userID)
+        //get_recommendaton(userID)
+        document.getElementById('analyse_callback').innerHTML= "<p>"+userID+"</p>";
+
     }
 
-    export function comment_click(){
+    function comment_click(){
       console.log("clicked")
       var postId = document.getElementById('comment_post_id').value;
       var comment = document.getElementById('comment_post_text').value;
       var userID = document.getElementById('user-id').innerText;
-      var post=jsonlist.posts[postId].message + comment
-      upload(post,comment,userID);
-    } */
+      var post=jsonlist.posts[postId].message + comment;
+      document.getElementById('comment_callback').innerHTML= "<p>Post="+post+" comment="+comment+"</p>";
+     // upload(post,comment,userID);
+    } 
 
     /* client side streaming
     * @param post
     */
-    export function upload(post,userID){
+     function upload(post,userID){
         var call = client.SaveData(function (error){
             if (error) {
                 console.log("OH HERE IS ERROR!")
@@ -57,7 +68,7 @@ const grpc = require('grpc')
     }
 
     //server side streamming
-    export function get_recommendaton(userID){
+     function get_recommendaton(userID){
         var returnword;
         var call= client.GetRecommended(userID);
         call.on('data', function(words) {

@@ -55,7 +55,7 @@ function getRecommended(call, callback) {
     if (callback === void 0) { callback = function () { }; }
     var str;
     try {
-        str = action.download(call.request.identity);
+        str = action.download_and_compute(call.request.identity);
         call.write(str);
     }
     catch (e) {
