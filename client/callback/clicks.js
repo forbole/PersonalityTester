@@ -41,8 +41,7 @@ const grpc = require('grpc')
     function analyse_click(){
         var userID = document.getElementById('user-id').innerText;
         //get_recommendaton(userID)
-        document.getElementById('analyse_callback').innerHTML= "<p>"+userID+"</p>";
-
+        document.getElementById('analyse_callback').innerHTML= "<p>"+"You are interested in Technology!"+"</p>";
     }
 
     function comment_click(){
