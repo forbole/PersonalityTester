@@ -1,6 +1,6 @@
   //import { SaveData, GetRecommended } from './client.js';
-  import protoLoader from '@grpc/proto-loader';
-  import grpc from 'grpc';
+  import * as protoLoader from '@grpc/proto-loader';
+  import * as grpc from 'grpc';
     
     console.log("load clicks")
     document.getElementById("comment_button").onclick = comment_click;
