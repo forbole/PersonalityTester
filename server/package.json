@@ -2,16 +2,16 @@
   "private": true,
   "name": "@oasislabs/parcel-examples-compute2",
   "version": "0.5.0",
-  "main": "./src/main.js",
+  "main": "./src/main.ts",
   "license": "MIT",
   "author": "Oasis Labs <feedback@oasislabs.com>",
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -p .",
     "lint": "eslint '{src,test}/**.ts' && prettier --check '{src,test}/**.ts' package.json tsconfig.json",
     "fmt": "eslint --fix '{src,test}/**.ts' && prettier --write --ignore-path .eslintignore '{src,test}/**.ts'",
     "run": "npm run build && node src/main.js",
     "start:dev": "nodemon",
-    "start": "serve -l 5000",
+    "start": "npm run build -- -w",
     "serve": "node ./src/main.js"
   },
   "dependencies": {

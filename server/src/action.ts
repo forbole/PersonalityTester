@@ -8,7 +8,7 @@ const config = new Parcel.Config(configParams);
 
 
 
-async function uploads_to_parcel(address,parsephase) {
+async function uploads(address,parsephase) {
   const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
   const aliceIdentityAddress = Parcel.Identity.addressFromToken(
     await aliceConfig.tokenProvider.getToken(),
@@ -16,8 +16,8 @@ async function uploads_to_parcel(address,parsephase) {
   const aliceIdentity = await Parcel.Identity.connect(aliceIdentityAddress, config);
 
   //need to get grant from steward app first
-  //const bobIdentityAddress = new Parcel.Address(address);
-  const bobIdentityAddress = new Parcel.Address("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
+  const bobIdentityAddress = new Parcel.Address(address);
+  //const bobIdentityAddress = new Parcel.Address("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
 
 
   const datasetMetadata = {
@@ -25,8 +25,8 @@ async function uploads_to_parcel(address,parsephase) {
     metadataUrl: 'http://s3-us-west-2.amazonaws.com/my_first_metadata.json',
   }
 
-  //const data =new TextEncoder().encode(parsephase)
-  const data = new TextEncoder().encode('The weather will be sunny tomorrow')
+  const data =new TextEncoder().encode(parsephase)
+  //const data = new TextEncoder().encode('The weather will be sunny tomorrow')
   console.log('Uploading data for Bob');
   const dataset = await Parcel.Dataset.upload(
     data,
@@ -42,70 +42,82 @@ async function uploads_to_parcel(address,parsephase) {
   );
 
   console.log(
-    `Created dataset with address ${dataset.address.hex} and uploaded to ${dataset.metadata.dataUrl}\n`,
+    `Created dataset with address ${dataset.address} and uploaded to ${dataset.metadata.dataUrl}\n`,
   );
+
+  return dataset.address
 }
 
-async function download_and_compute(identity) {
-  const dataset = await download(identity)
-  const result = compute(dataset)
-  return result
-}
-
-async function download(identity) {
+async function download(identity="0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1",writeFile='./docker/test_workdir/data/in/intext.txt') {
   const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
   const aliceIdentityAddress = Parcel.Identity.addressFromToken(
     await aliceConfig.tokenProvider.getToken(),
   );
   const aliceIdentity = await Parcel.Identity.connect(aliceIdentityAddress, config);
-
-  //const bobIdentityAddress = new Parcel.Address(identity);
+  //get all identity address
   const bobIdentityAddress = new Parcel.Address("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
-  var datasetByAlice = await Parcel.Dataset.connect(bobIdentityAddress, aliceIdentity, aliceConfig);
-  const streamFinished = require('util').promisify(require('stream').finished);
-  const writeFile = '../docker/test_workdir/data/in'
-try {
-  const secretDataStream = datasetByAlice.download();
-  
-  const secretDatasetWriter = secretDataStream.pipe(
-      require('fs').createWriteStream(writeFile),
-  );
-  await streamFinished(secretDatasetWriter);
-  console.log(
-      `\nDataset ${datasetByAlice.address.hex} has been downloaded to ${writeFile}`,
-  );
-} catch (e) {
-  throw new Error(`Failed to download dataset at ${datasetByAlice.address.hex}`);
-}
+  const bobIdentity = await Parcel.Identity.connect(bobIdentityAddress,aliceConfig);
+  const bobDatasets = await bobIdentity.getOwnedDatasets();
+  var datasets = aliceIdentity.getOwnedDatasets();
+  //const writeFile = '../docker/test_workdir/data/in';
+
+    bobDatasets.forEach(
+      async function (value) {
+        var datasetByAlice = await Parcel.Dataset.connect(value.address, aliceIdentity, aliceConfig);
+        const streamFinished = require('util').promisify(require('stream').finished);
+        try {
+          const secretDataStream = datasetByAlice.download();
+      
+          const secretDatasetWriter = secretDataStream.pipe(
+          require('fs').createWriteStream(writeFile),
+          );
+        await streamFinished(secretDatasetWriter);
+        console.log(
+          `\nDataset ${datasetByAlice.address.hex} has been downloaded to ${writeFile}`,
+        );
+        } catch (e) {
+      throw new Error(`Failed to download dataset at ${datasetByAlice.address.hex}`);
+    }
+      }
+  )
+    
 const secretDataByAlice = require('fs').readFileSync(writeFile).toString();
   console.log(`Here's the data: ${secretDataByAlice}`);
-
   return secretDataByAlice;
-  
 }
 /* docker run \  -v $PWD/test_workdir:/predict/test \
    appleno0610/testlabel:latest \
   /usr/bin/python3 compute.py /predict/test/data/in/intext.txt /predict/test/data/in/label.txt /predict/test/data/out/out.txt /predict/test/distilbart-mnli-12-1 */
-async function compute(dataset) {
+
+/* 
+This function get the latest entry of the user dataset and return the personality test
+@param user identity address (string)
+@return result 
+*/
+async function compute(address) {
   const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
   const aliceIdentityAddress = Parcel.Identity.addressFromToken(
     await aliceConfig.tokenProvider.getToken(),
   );
   const aliceIdentity = await Parcel.Identity.connect(aliceIdentityAddress, config);
   const dispatcher = await Parcel.Dispatcher.connect(config.dispatcherAddress, aliceIdentity, config);
+  
+  const bobIdentityAddress = new Parcel.Address(address);
+  //const bobIdentityAddress = new Parcel.Address("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
+  const bobIdentity = await Parcel.Identity.connect(bobIdentityAddress,aliceConfig);
+  const bobDatasets = await bobIdentity.getOwnedDatasets();
+  const dataset = bobDatasets.pop();
 
   const jobRequest = {
     name: 'social-media-personality-classification',
-    dockerImage: 'appleno0610/testlabel:latest',
+    dockerImage: 'appleno0610/testlabel:var0.5',
     inputDatasets: [{ mountPath: 'intext.txt', address: dataset.address }],
-    outputDatasets: [{ mountPath: 'out.txt', owner: aliceIdentity }],
+    outputDatasets: [{ mountPath: 'out.txt', owner: bobIdentity }],
     cmd: [
       '/usr/bin/python3',
       'compute.py',
-      '/predict/test/data/in/intext.txt',
-      '/predict/test/data/in/label.txt',
-      '/predict/test/data/out/out.txt',
-      '/predict/test/distilbart-mnli-12-1',
+      '/parcel/data/in/intext.txt',
+      '/parcel/data/out/out.txt',
     ]
   }
 
@@ -121,24 +133,32 @@ async function compute(dataset) {
         console.log('Job failed!', job.info);
     }
   
+    if (job.outputs[0]) {
+      const output = await Parcel.Dataset.connect(job.outputs[0].address, aliceIdentity, aliceConfig);
+      await output.downloadToPath('./job_out');
+      console.log('Job output stored in ./job_out.');
+  }
+  
   try {
-    var result = readFileSync("./docker/test_workdir/data/out/out.txt", 'utf8');
+    var result = readFileSync('./job_out', 'utf8');
   } catch (e) {
-    console.log('CANNOT READ FILE', job.info);
+    console.log('CANNOT READ FILE');
     result = 'CANNOT READ FILE'
   }
-  console.log(result)
-  return result
+    console.log(result);
+    return result;
 }
 
 
 export {
-  uploads_to_parcel,
+  uploads,
   download,
+  compute,
 }
 
-async function main() {
-  await download("123")
+/* async function main() {
+  console.log("start");
+  await compute("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
 }
 
 main()
@@ -147,3 +167,4 @@ main()
         console.log(`Error in main(): ${err.stack || JSON.stringify(err)}`);
         process.exitCode = 1;
     });
+ */

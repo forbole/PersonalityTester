@@ -18,15 +18,14 @@
 
 import dotenv from 'dotenv'
 dotenv.config()
-/* require('dotenv').config();
- */
-import * as action from './action.js'
+import * as action from './action'
 import * as path from 'path'
 import Mali from 'mali'
 
 /* const action = require('./action')
 const path = require('path')
 const Mali = require('mali') */
+var __dirname = "/Users/apple/Forbole/parcel-examples/account-linking/server/src"
 const PROTO_PATH = path.resolve(__dirname, './recommend.proto');
 const app = new Mali(PROTO_PATH, 'ParcelParser')
 
@@ -38,7 +37,7 @@ function saveData(call,callback) {
             console.log(likedpost.parsePhase);
             console.log(likedpost.identity);
             try{
-                action.uploads_to_parcel(likedpost.identity,likedpost.parsePhase)
+              action.uploads(likedpost.identity,likedpost.parsePhase)
             }catch (e){
                 console.error(e)
                 throw new Error("Cannot upload!")
@@ -54,7 +53,7 @@ function saveData(call,callback) {
 function getRecommended(call,callback=function(){}) {
      var str;
      try{
-         str = action.download_and_compute(call.request.identity)
+         str = action.compute(call.request.identity)
          call.write(str);
      }catch(e){
         console.error(e)
@@ -70,3 +69,23 @@ function main () {
   }
   
   main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

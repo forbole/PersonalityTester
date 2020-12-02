@@ -20,14 +20,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tslib_1 = require("tslib");
 var dotenv_1 = tslib_1.__importDefault(require("dotenv"));
 dotenv_1.default.config();
-/* require('dotenv').config();
- */
-var action = tslib_1.__importStar(require("./action.js"));
+var action = tslib_1.__importStar(require("./action"));
 var path = tslib_1.__importStar(require("path"));
 var mali_1 = tslib_1.__importDefault(require("mali"));
 /* const action = require('./action')
 const path = require('path')
 const Mali = require('mali') */
+var __dirname = "/Users/apple/Forbole/parcel-examples/account-linking/server/src";
 var PROTO_PATH = path.resolve(__dirname, './recommend.proto');
 var app = new mali_1.default(PROTO_PATH, 'ParcelParser');
 /* input stream */
@@ -38,7 +37,7 @@ function saveData(call, callback) {
             console.log(likedpost.parsePhase);
             console.log(likedpost.identity);
             try {
-                action.uploads_to_parcel(likedpost.identity, likedpost.parsePhase);
+                action.uploads(likedpost.identity, likedpost.parsePhase);
             }
             catch (e) {
                 console.error(e);
@@ -55,7 +54,7 @@ function getRecommended(call, callback) {
     if (callback === void 0) { callback = function () { }; }
     var str;
     try {
-        str = action.download_and_compute(call.request.identity);
+        str = action.compute(call.request.identity);
         call.write(str);
     }
     catch (e) {

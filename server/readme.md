@@ -3,9 +3,8 @@
 To Run the server, ensure you have npm and nodejs installed on your machine and run:
 
 `
-npm install
-npm build
-node src/main.js
+npm run build
+npm start
 `
 
 ## Recommendation 
@@ -16,6 +15,8 @@ Clone the model from github and put that to ./server/docker/test_workdir
 cd ./server/docker/test_workdir
 git clone https://github.com/patil-suraj/distillbart-mnli.git
 `
+
+
 
 
 ### Run docker!
