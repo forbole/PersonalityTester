@@ -63,5 +63,6 @@ function SaveData(address,parsePhase,callback) {
 
 export{
     SaveData,
-    GetRecommended
+    GetRecommended,
 }
+
