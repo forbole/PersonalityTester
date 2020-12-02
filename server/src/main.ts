@@ -20,72 +20,71 @@ import dotenv from 'dotenv'
 dotenv.config()
 import * as action from './action'
 import * as path from 'path'
-import Mali from 'mali'
+var grpc = require('grpc');
 
 /* const action = require('./action')
 const path = require('path')
 const Mali = require('mali') */
 var __dirname = "/Users/apple/Forbole/parcel-examples/account-linking/server/src"
 const PROTO_PATH = path.resolve(__dirname, './recommend.proto');
-const app = new Mali(PROTO_PATH, 'ParcelParser')
+var protoLoader = require('@grpc/proto-loader');
+var packageDefinition = protoLoader.loadSync(
+    PROTO_PATH,
+    {keepCase: true,
+     longs: String,
+     enums: String,
+     defaults: true,
+     oneofs: true
+    });
+var routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
 
 /* input stream */
 // savedata et the user action stream and save that to parcel
-function saveData(call,callback) {
-    call.on('data', function (likedpost) {
-        if (likedpost.parsePhase != '') {
-            console.log(likedpost.parsePhase);
-            console.log(likedpost.identity);
-            try{
-              action.uploads(likedpost.identity,likedpost.parsePhase)
-            }catch (e){
-                console.error(e)
-                throw new Error("Cannot upload!")
-            }
-         }
-    });
-    call.on('end', function () {
-        callback(null, { msg: "message received!" });
-    })
+function saveData(call, callback) {
+    var outputstr;
+    var likedpost = call.request
+    if (likedpost.parsePhase != '') {
+        console.log(likedpost.parsePhase);
+        console.log(likedpost.identity);
+        try {
+            outputstr = action.uploads(likedpost.identity, likedpost.parsePhase)
+        } catch (e) {
+            console.error(e)
+            throw new Error("Cannot upload!")
+        }
+    }
+    callback(null, { msg: outputstr });
 }
 
 /* output stream */
-function getRecommended(call,callback=function(){}) {
+function getRecommended(call,callback) {
      var str;
-     try{
-         str = action.compute(call.request.identity)
-         call.write(str);
-     }catch(e){
+    try {
+        str = action.compute(call.request.identity)
+        callback(null,{msg:str})
+    } catch (e) {
         console.error(e)
         throw new Error("Cannot download!")
-     }
-    call.end();
+    }
 }
 
-function main () {
-    app.use({saveData, getRecommended })
-    console.log("Yeah you made it!")
-    app.start('127.0.0.1:50051')
+function getServer() {
+    var server = new grpc.Server();
+    server.addProtoService(routeguide.RouteGuide.service, {
+        saveData: saveData,
+        getRecommended: getRecommended,
+    });
+    return server;
   }
-  
-  main()
 
+if (require.main === module) {
+    // If this is run as a script, start a server on an unused port
+    var routeServer = getServer();
+    //which port?
+    routeServer.bind('0.0.0.0:50051', grpc.ServerCredentials.createInsecure());
+    //node ./dynamic_codegen/route_guide/route_guide_server.js --db_path=./dynamic_codegen/route_guide/route_guide_db.json
 
+    routeServer.start();
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+exports.getServer = getServer;
