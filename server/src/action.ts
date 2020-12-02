@@ -45,7 +45,7 @@ async function uploads(address,parsephase) {
     `Created dataset with address ${dataset.address} and uploaded to ${dataset.metadata.dataUrl}\n`,
   );
 
-  return dataset.address
+  return dataset.address.hex
 }
 
 async function download(identity="0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1",writeFile='./docker/test_workdir/data/in/intext.txt') {

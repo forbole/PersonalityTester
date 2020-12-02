@@ -47,7 +47,7 @@ function uploads(address, parsephase) {
                 case 4:
                     dataset = _f.sent();
                     console.log("Created dataset with address " + dataset.address + " and uploaded to " + dataset.metadata.dataUrl + "\n");
-                    return [2 /*return*/, dataset.address];
+                    return [2 /*return*/, dataset.address.hex];
             }
         });
     });
