@@ -1,6 +1,5 @@
 import protoLoader from '@grpc/proto-loader';
 import grpc from 'grpc';
-import async from 'async';
 
 var PROTO_PATH = "/Users/apple/Forbole/parcel-examples/account-linking/server/src/recommend.proto"
 //define server to be connected
@@ -17,52 +16,52 @@ var routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
 var client = new routeguide.RouteGuide('0.0.0.0:50051',
                                        grpc.credentials.createInsecure());
 
-function TestGetRecommended(callback) {
-    var parsephase = {
-        parsePhase: "This is a test!",
-        identity: "0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1"
-    }
-
+/**
+ * 
+ * @param {*} address User identity address
+ * @param {*} callback funciton that take a string as arg
+ */
+function GetRecommended(address,callback) {
     var userInfo = {
-        identity: "0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1"
+        identity: address
     }
-    var returnStr=""
     function getRecommendCallback(err,words){
         if (err){
             callback(err)
             return
         }
+        callback(words.word)
         console.log(words.word)
     }
-
     client.GetRecommended(userInfo,getRecommendCallback)
-    
 }
 
-function TestSaveData(callback) {
+/**
+ * 
+ * @param {*} address User Identity Address
+ * @param {*} parsePhase The words that need to be stored
+ * @param {*} callback a function that take a string as arg
+ */
+function SaveData(address,parsePhase,callback) {
     var parsephase = {
-        parsePhase: "This is a test!",
-        identity: "0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1"
+        parsePhase: parsePhase,
+        identity: address
     }
 
-    var returnStr=""
     function TestSaveDataCallback(err,words){
         if (err){
             callback(error)
             return
         }
+        callback(words.msg)
         console.log(words.msg)
     }
 
-    client.SaveData(parsephase,getRecommendCallback)
-    call.end();
+    client.SaveData(parsephase,TestSaveDataCallback)
+    
 }
 
-function main() {
-    async.series([
-        TestGetRecommended,
-        TestSaveData,
-    ]);
-  }
-  
-main()
+export{
+    SaveData,
+    GetRecommended
+}
