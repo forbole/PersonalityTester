@@ -7,7 +7,7 @@ This would ensure the privacy of the activies of user on social media as well as
 The user will send the metadata about their actions on blogposts to Parcel. The activities would possibility include "like", "comment" or post, depends on use cases. Parcel SDK will pull all of the user data and use a Parcel Script to analyse that. The users can view their own statistics and doing a little "personality test" base on their statistics. 
 
 ## Demo link 
-[Watch Demo]()
+[Watch Demo](https://www.youtube.com/watch?v=W19jDXtHx0c)
 
 ## Run Server
 To Run the server, ensure you have npm and nodejs installed on your machine and run:
@@ -54,7 +54,10 @@ To test docker is install correctly, run:
 `
 cd docker
 
-docker run \  -v $PWD/test_workdir:/predict/test \
+docker run \  -v $PWD/test_workdir:/parcel/test \
    appleno0610/testlabel:latest \
-  /usr/bin/python3 compute.py /predict/test/data/in/intext.txt /predict/test/data/in/label.txt /predict/test/data/out/out.txt /predict/test/distilbart-mnli-12-1
+  /usr/bin/python3 compute.py /parcel/test/data/in/intext.txt /parcel/test/data/out/out.txt 
 `
+
+## Known issue
+gRPC is not compiling. Therefore, instead of the front end client, you should test the server for the Parcel SDK functionality.
