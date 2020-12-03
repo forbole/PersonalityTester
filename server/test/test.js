@@ -1,3 +1,7 @@
+/**
+ * MUST include "type":"module" in package.json
+ */
+
 import protoLoader from '@grpc/proto-loader';
 import grpc from 'grpc';
 import async from 'async';

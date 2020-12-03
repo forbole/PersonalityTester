@@ -7,7 +7,12 @@ const configParams = Parcel.Config.paramsFromEnv();
 const config = new Parcel.Config(configParams);
 
 
-
+/**
+ * This upload the data that user want to save to Parcel
+ * @param address User identity address
+ * @param parsephase The entry that want to save
+ * @return hash of that document stored in Parcel 
+ */
 async function uploads(address,parsephase) {
   const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
   const aliceIdentityAddress = Parcel.Identity.addressFromToken(
@@ -24,7 +29,6 @@ async function uploads(address,parsephase) {
     title: "What you read?",
     metadataUrl: 'http://s3-us-west-2.amazonaws.com/my_first_metadata.json',
   }
-
   const data =new TextEncoder().encode(parsephase)
   //const data = new TextEncoder().encode('The weather will be sunny tomorrow')
   console.log('Uploading data for Bob');
@@ -48,6 +52,11 @@ async function uploads(address,parsephase) {
   return dataset.address.hex
 }
 
+/**
+ * This function return all the history dasta that the user has been stored
+ * @param identity User Identity Address
+ * @param writeFile The output file 
+ */
 async function download(identity="0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1",writeFile='./docker/test_workdir/data/in/intext.txt') {
   const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
   const aliceIdentityAddress = Parcel.Identity.addressFromToken(
@@ -89,11 +98,11 @@ const secretDataByAlice = require('fs').readFileSync(writeFile).toString();
    appleno0610/testlabel:latest \
   /usr/bin/python3 compute.py /predict/test/data/in/intext.txt /predict/test/data/in/label.txt /predict/test/data/out/out.txt /predict/test/distilbart-mnli-12-1 */
 
-/* 
-This function get the latest entry of the user dataset and return the personality test
-@param user identity address (string)
-@return result 
-*/
+/**
+ * This pull all data history from client and compute that in a docker job
+ * @param address User Identity Address
+ * @returns output of the docker job
+ */
 async function compute(address) {
   const aliceConfig = new Parcel.Config(Parcel.Config.paramsFromEnv());
   const aliceIdentityAddress = Parcel.Identity.addressFromToken(

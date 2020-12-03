@@ -1,30 +1,12 @@
-/*
- *
- * Copyright 2015 gRPC authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+/**
+ * MUST NOT include "type":"module" in package.json
  */
-
 import dotenv from 'dotenv'
 dotenv.config()
 import * as action from './action'
 import * as path from 'path'
 var grpc = require('grpc');
 
-/* const action = require('./action')
-const path = require('path')
-const Mali = require('mali') */
 var __dirname = "/Users/apple/Forbole/parcel-examples/account-linking/server/src"
 const PROTO_PATH = path.resolve(__dirname, './recommend.proto');
 var protoLoader = require('@grpc/proto-loader');
@@ -38,8 +20,11 @@ var packageDefinition = protoLoader.loadSync(
     });
 var routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
 
-/* input stream */
-// savedata et the user action stream and save that to parcel
+/**
+ * Save the data to Parcel
+ * @param call Datastream {parsePhase, identity} 
+ * @param callback (error,{msg})
+ */
 function saveData(call, callback) {
     var outputstr;
     var likedpost = call.request
@@ -56,8 +41,12 @@ function saveData(call, callback) {
     callback(null, { msg: outputstr });
 }
 
-/* output stream */
-function getRecommended(call,callback) {
+/**
+ * 
+ * @param call UserInfo{identity} user identity address
+ * @param callback (error,Words{word})
+ */
+function getRecommended(call, callback) {
      var str;
     try {
         str = action.compute(call.request.identity)
