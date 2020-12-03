@@ -2,7 +2,7 @@
 import grpc from '../node_modules/grpc';
  */
 const {Datastream,msg,Words,UserInfo} = require('./recommend_pb.js');
-const {RouteGuideClient} = require('./recommend_grpc_web_pb');
+const {RouteGuideClient} = require('./recommend_grpc_web_pb.js');
 //define server to be connected
 var echoService = new RouteGuideClient(
     'http://localhost:50051', null, null);

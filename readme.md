@@ -1,10 +1,13 @@
 # NLP processing with Parcel SDK
 
-Everyone want to get recommended feed on social media, but no one want to let people know their activies.
+Everyone want to get recommended feed on social media. To get recommended, user activities will be analysed to the  but no one want to let people know their activies.
 
 This would ensure the privacy of the activies of user on social media as well as doing recommendation. The user may know what data is used for analysis in the [Steward App](https://steward.oasiscloud.io/).
 
 The user will send the metadata about their actions on blogposts to Parcel. The activities would possibility include "like", "comment" or post, depends on use cases. Parcel SDK will pull all of the user data and use a Parcel Script to analyse that. The users can view their own statistics and doing a little "personality test" base on their statistics. 
+
+## Demo link 
+[Watch Demo]()
 
 ## Run Server
 To Run the server, ensure you have npm and nodejs installed on your machine and run:
