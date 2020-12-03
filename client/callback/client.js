@@ -18,8 +18,8 @@ function GetRecommended(address,callback) {
             callback(err)
             return
         }
-        callback(words.word)
-        console.log(words.word)
+        callback(words.getWord())
+        console.log(words.getWord())
     }
     var request = new UserInfo();
     request.setIdentity(address)
@@ -38,8 +38,8 @@ function SaveData(address,parsePhase,callback) {
             callback(err)
             return
         }
-        callback(words.msg)
-        console.log(words.msg)
+        callback(words.getMsg())
+        console.log(words.getMsg())
     }
     var request = new Datastream()
     request.setParsePhase(parsePhase)
