@@ -1,8 +1,11 @@
 const path = require('path');
+
 module.exports = {
-    entry: './callback/main.js',
+    // entry: ['./callback/clicks.js',
+    //         './callback/client.js',
+    //         ],
     output: {
-        filename: 'index.bundle.js',
+        filename: 'dist/index.bundle.js',
         path: path.resolve(__dirname, './'),
     }
 };

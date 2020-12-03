@@ -1,4 +1,4 @@
-  const {SaveData,GetRecommended} = require('./client')
+//   import { SaveData, GetRecommended } from '../dist/index.bundle.js';
   
   console.log("load clicks")
     document.getElementById("comment_button").onclick = comment_click;

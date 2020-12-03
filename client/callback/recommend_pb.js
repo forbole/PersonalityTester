@@ -10,7 +10,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-var jspb = require('google-protobuf');
+import jspb, { Message, BinaryReader, BinaryWriter } from 'google-protobuf';
 var goog = jspb;
 var global = Function('return this')();
 
@@ -29,9 +29,9 @@ goog.exportSymbol('proto.routeguide.msg', null, global);
  * @constructor
  */
 proto.routeguide.Datastream = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.routeguide.Datastream, jspb.Message);
+goog.inherits(proto.routeguide.Datastream, Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
@@ -50,9 +50,9 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.routeguide.msg = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.routeguide.msg, jspb.Message);
+goog.inherits(proto.routeguide.msg, Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
@@ -71,9 +71,9 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.routeguide.UserInfo = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.routeguide.UserInfo, jspb.Message);
+goog.inherits(proto.routeguide.UserInfo, Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
@@ -92,9 +92,9 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.routeguide.Words = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  Message.initialize(this, opt_data, 0, -1, null, null);
 };
-goog.inherits(proto.routeguide.Words, jspb.Message);
+goog.inherits(proto.routeguide.Words, Message);
 if (goog.DEBUG && !COMPILED) {
   /**
    * @public
@@ -105,7 +105,7 @@ if (goog.DEBUG && !COMPILED) {
 
 
 
-if (jspb.Message.GENERATE_TO_OBJECT) {
+if (Message.GENERATE_TO_OBJECT) {
 /**
  * Creates an object representation of this proto.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
@@ -134,8 +134,8 @@ proto.routeguide.Datastream.prototype.toObject = function(opt_includeInstance) {
  */
 proto.routeguide.Datastream.toObject = function(includeInstance, msg) {
   var f, obj = {
-    parsephase: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    identity: jspb.Message.getFieldWithDefault(msg, 2, "")
+    parsephase: Message.getFieldWithDefault(msg, 1, ""),
+    identity: Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -152,7 +152,7 @@ proto.routeguide.Datastream.toObject = function(includeInstance, msg) {
  * @return {!proto.routeguide.Datastream}
  */
 proto.routeguide.Datastream.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
+  var reader = new BinaryReader(bytes);
   var msg = new proto.routeguide.Datastream;
   return proto.routeguide.Datastream.deserializeBinaryFromReader(msg, reader);
 };
@@ -194,7 +194,7 @@ proto.routeguide.Datastream.deserializeBinaryFromReader = function(msg, reader) 
  * @return {!Uint8Array}
  */
 proto.routeguide.Datastream.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
+  var writer = new BinaryWriter();
   proto.routeguide.Datastream.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
@@ -231,7 +231,7 @@ proto.routeguide.Datastream.serializeBinaryToWriter = function(message, writer) 
  * @return {string}
  */
 proto.routeguide.Datastream.prototype.getParsephase = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -240,7 +240,7 @@ proto.routeguide.Datastream.prototype.getParsephase = function() {
  * @return {!proto.routeguide.Datastream} returns this
  */
 proto.routeguide.Datastream.prototype.setParsephase = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  return Message.setProto3StringField(this, 1, value);
 };
 
 
@@ -249,7 +249,7 @@ proto.routeguide.Datastream.prototype.setParsephase = function(value) {
  * @return {string}
  */
 proto.routeguide.Datastream.prototype.getIdentity = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+  return /** @type {string} */ (Message.getFieldWithDefault(this, 2, ""));
 };
 
 
@@ -258,14 +258,14 @@ proto.routeguide.Datastream.prototype.getIdentity = function() {
  * @return {!proto.routeguide.Datastream} returns this
  */
 proto.routeguide.Datastream.prototype.setIdentity = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+  return Message.setProto3StringField(this, 2, value);
 };
 
 
 
 
 
-if (jspb.Message.GENERATE_TO_OBJECT) {
+if (Message.GENERATE_TO_OBJECT) {
 /**
  * Creates an object representation of this proto.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
@@ -294,7 +294,7 @@ proto.routeguide.msg.prototype.toObject = function(opt_includeInstance) {
  */
 proto.routeguide.msg.toObject = function(includeInstance, msg) {
   var f, obj = {
-    msg: jspb.Message.getFieldWithDefault(msg, 1, "")
+    msg: Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -311,7 +311,7 @@ proto.routeguide.msg.toObject = function(includeInstance, msg) {
  * @return {!proto.routeguide.msg}
  */
 proto.routeguide.msg.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
+  var reader = new BinaryReader(bytes);
   var msg = new proto.routeguide.msg;
   return proto.routeguide.msg.deserializeBinaryFromReader(msg, reader);
 };
@@ -349,7 +349,7 @@ proto.routeguide.msg.deserializeBinaryFromReader = function(msg, reader) {
  * @return {!Uint8Array}
  */
 proto.routeguide.msg.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
+  var writer = new BinaryWriter();
   proto.routeguide.msg.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
@@ -379,7 +379,7 @@ proto.routeguide.msg.serializeBinaryToWriter = function(message, writer) {
  * @return {string}
  */
 proto.routeguide.msg.prototype.getMsg = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -388,14 +388,14 @@ proto.routeguide.msg.prototype.getMsg = function() {
  * @return {!proto.routeguide.msg} returns this
  */
 proto.routeguide.msg.prototype.setMsg = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  return Message.setProto3StringField(this, 1, value);
 };
 
 
 
 
 
-if (jspb.Message.GENERATE_TO_OBJECT) {
+if (Message.GENERATE_TO_OBJECT) {
 /**
  * Creates an object representation of this proto.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
@@ -424,7 +424,7 @@ proto.routeguide.UserInfo.prototype.toObject = function(opt_includeInstance) {
  */
 proto.routeguide.UserInfo.toObject = function(includeInstance, msg) {
   var f, obj = {
-    identity: jspb.Message.getFieldWithDefault(msg, 1, "")
+    identity: Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -441,7 +441,7 @@ proto.routeguide.UserInfo.toObject = function(includeInstance, msg) {
  * @return {!proto.routeguide.UserInfo}
  */
 proto.routeguide.UserInfo.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
+  var reader = new BinaryReader(bytes);
   var msg = new proto.routeguide.UserInfo;
   return proto.routeguide.UserInfo.deserializeBinaryFromReader(msg, reader);
 };
@@ -479,7 +479,7 @@ proto.routeguide.UserInfo.deserializeBinaryFromReader = function(msg, reader) {
  * @return {!Uint8Array}
  */
 proto.routeguide.UserInfo.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
+  var writer = new BinaryWriter();
   proto.routeguide.UserInfo.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
@@ -509,7 +509,7 @@ proto.routeguide.UserInfo.serializeBinaryToWriter = function(message, writer) {
  * @return {string}
  */
 proto.routeguide.UserInfo.prototype.getIdentity = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -518,14 +518,14 @@ proto.routeguide.UserInfo.prototype.getIdentity = function() {
  * @return {!proto.routeguide.UserInfo} returns this
  */
 proto.routeguide.UserInfo.prototype.setIdentity = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  return Message.setProto3StringField(this, 1, value);
 };
 
 
 
 
 
-if (jspb.Message.GENERATE_TO_OBJECT) {
+if (Message.GENERATE_TO_OBJECT) {
 /**
  * Creates an object representation of this proto.
  * Field names that are reserved in JavaScript and will be renamed to pb_name.
@@ -554,7 +554,7 @@ proto.routeguide.Words.prototype.toObject = function(opt_includeInstance) {
  */
 proto.routeguide.Words.toObject = function(includeInstance, msg) {
   var f, obj = {
-    word: jspb.Message.getFieldWithDefault(msg, 1, "")
+    word: Message.getFieldWithDefault(msg, 1, "")
   };
 
   if (includeInstance) {
@@ -571,7 +571,7 @@ proto.routeguide.Words.toObject = function(includeInstance, msg) {
  * @return {!proto.routeguide.Words}
  */
 proto.routeguide.Words.deserializeBinary = function(bytes) {
-  var reader = new jspb.BinaryReader(bytes);
+  var reader = new BinaryReader(bytes);
   var msg = new proto.routeguide.Words;
   return proto.routeguide.Words.deserializeBinaryFromReader(msg, reader);
 };
@@ -609,7 +609,7 @@ proto.routeguide.Words.deserializeBinaryFromReader = function(msg, reader) {
  * @return {!Uint8Array}
  */
 proto.routeguide.Words.prototype.serializeBinary = function() {
-  var writer = new jspb.BinaryWriter();
+  var writer = new BinaryWriter();
   proto.routeguide.Words.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
@@ -639,7 +639,7 @@ proto.routeguide.Words.serializeBinaryToWriter = function(message, writer) {
  * @return {string}
  */
 proto.routeguide.Words.prototype.getWord = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (Message.getFieldWithDefault(this, 1, ""));
 };
 
 
@@ -648,7 +648,7 @@ proto.routeguide.Words.prototype.getWord = function() {
  * @return {!proto.routeguide.Words} returns this
  */
 proto.routeguide.Words.prototype.setWord = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  return Message.setProto3StringField(this, 1, value);
 };
 
 

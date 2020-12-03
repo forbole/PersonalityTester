@@ -1,7 +1,7 @@
 /* import protoLoader from '../node_modules/@grpc/proto-loader';
 import grpc from '../node_modules/grpc';
  */
-const {Datastream,msg,Words,UserInfo} = require('./echo_pb.js');
+const {Datastream,msg,Words,UserInfo} = require('./recommend_pb.js');
 const {RouteGuideClient} = require('./recommend_grpc_web_pb');
 //define server to be connected
 var echoService = new RouteGuideClient(

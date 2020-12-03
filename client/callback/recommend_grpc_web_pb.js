@@ -230,5 +230,5 @@ proto.routeguide.RouteGuidePromiseClient.prototype.getRecommended =
 };
 
 
-module.exports = proto.routeguide;
+export default proto.routeguide;
 
