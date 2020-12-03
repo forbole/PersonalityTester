@@ -64,7 +64,7 @@ async function download(identity="0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1",wr
   );
   const aliceIdentity = await Parcel.Identity.connect(aliceIdentityAddress, config);
   //get all identity address
-  const bobIdentityAddress = new Parcel.Address("0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1");
+  const bobIdentityAddress = new Parcel.Address(identity);
   const bobIdentity = await Parcel.Identity.connect(bobIdentityAddress,aliceConfig);
   const bobDatasets = await bobIdentity.getOwnedDatasets();
   var datasets = aliceIdentity.getOwnedDatasets();

@@ -13,15 +13,30 @@ To Run the server, ensure you have npm and nodejs installed on your machine and 
 npm run build
 npm start
 `
+
 "type":"Modules" must not include in "package.json"
 ## Server Testing
 To test the functionality,set up the server and run below:
 `
 ts-node test/test.js
 `
+
 Watch [steward](https://steward.oasiscloud.io/) for data usage. You can also watch output in the server debug console.
 "type":"Modules" must include in "package.json"
 
+You should see the output on server debug console below:
+
+`
+This is a test!
+0xddbe5ae7e8bf58f24f8253fe9d3473392c61a8f1
+Uploading data for Bob
+Job 0xd638b5d264e8213ec9271df17e21ae2deb542e3d166846cab0a1fd4c76be1c95 submitted.
+Created dataset with address [object Object] and uploaded to parcel://824d3f53-2d77-4f38-a51f-83983bdcfd97
+
+Job completed successfully!
+Job output stored in ./job_out.
+You are interest in technology!
+`
 ## Recommendation 
 Clone the model from github and put that to ./server/docker/test_workdir
 

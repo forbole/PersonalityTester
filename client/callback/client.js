@@ -8,7 +8,7 @@ var echoService = new RouteGuideClient(
     'http://localhost:50051', null, null);
 
 /**
- * 
+ * Send to Server and get a string of recommendation back
  * @param {*} address User identity address
  * @param {*} callback funciton that take a string as arg
  */
@@ -27,7 +27,7 @@ function GetRecommended(address,callback) {
 }
 
 /**
- * 
+ * Send user data to Server
  * @param {*} address User Identity Address
  * @param {*} parsePhase The words that need to be stored
  * @param {*} callback a function that take a string as arg

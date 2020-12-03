@@ -25,7 +25,7 @@ goog.exportSymbol('proto.routeguide.msg', null, global);
  * in place and becomes part of the constructed object. It is not cloned.
  * If no data is provided, the constructed object will be empty, but still
  * valid.
- * @extends {jspb.Message}
+ * @extends {jspb.Message} 
  * @constructor
  */
 proto.routeguide.Datastream = function(opt_data) {
