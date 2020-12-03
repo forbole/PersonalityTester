@@ -1,20 +1,11 @@
-import protoLoader from '@grpc/proto-loader';
-import grpc from 'grpc';
-
-var PROTO_PATH = "/Users/apple/Forbole/parcel-examples/account-linking/server/src/recommend.proto"
+/* import protoLoader from '../node_modules/@grpc/proto-loader';
+import grpc from '../node_modules/grpc';
+ */
+const {Datastream,msg,Words,UserInfo} = require('./echo_pb.js');
+const {RouteGuideClient} = require('./recommend_grpc_web_pb');
 //define server to be connected
-
-var packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {keepCase: true,
-     longs: String,
-     enums: String,
-     defaults: true,
-     oneofs: true
-    });
-var routeguide = grpc.loadPackageDefinition(packageDefinition).routeguide;
-var client = new routeguide.RouteGuide('0.0.0.0:50051',
-                                       grpc.credentials.createInsecure());
+var echoService = new RouteGuideClient(
+    'http://localhost:50051', null, null);
 
 /**
  * 
@@ -22,9 +13,6 @@ var client = new routeguide.RouteGuide('0.0.0.0:50051',
  * @param {*} callback funciton that take a string as arg
  */
 function GetRecommended(address,callback) {
-    var userInfo = {
-        identity: address
-    }
     function getRecommendCallback(err,words){
         if (err){
             callback(err)
@@ -33,7 +21,9 @@ function GetRecommended(address,callback) {
         callback(words.word)
         console.log(words.word)
     }
-    client.GetRecommended(userInfo,getRecommendCallback)
+    var request = new UserInfo();
+    request.setIdentity(address)
+    echoService.getRecommended(request, {},getRecommendCallback)
 }
 
 /**
@@ -43,21 +33,18 @@ function GetRecommended(address,callback) {
  * @param {*} callback a function that take a string as arg
  */
 function SaveData(address,parsePhase,callback) {
-    var parsephase = {
-        parsePhase: parsePhase,
-        identity: address
-    }
-
     function TestSaveDataCallback(err,words){
         if (err){
-            callback(error)
+            callback(err)
             return
         }
         callback(words.msg)
         console.log(words.msg)
     }
-
-    client.SaveData(parsephase,TestSaveDataCallback)
+    var request = new Datastream()
+    request.setParsePhase(parsePhase)
+    request.setIdentity(address)
+    echoService.saveData(request, {},TestSaveDataCallback)
     
 }
 
