@@ -14,14 +14,15 @@ To Run the server, ensure you have npm and nodejs installed on your machine and 
 
 `
 npm run build
-npm start
+
+npm run serve
 `
 
 "type":"Modules" must not include in "package.json"
 ## Server Testing
 To test the functionality,set up the server and run below:
 `
-ts-node test/test.js
+node test/test.js
 `
 
 Watch [steward](https://steward.oasiscloud.io/) for data usage. You can also watch output in the server debug console.
